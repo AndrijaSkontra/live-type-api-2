@@ -1,0 +1,18 @@
+meta {
+  name: Post a user score
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:3000/game-scores
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "wpm": 34,
+    "username": "TestUser"
+  }
+}
