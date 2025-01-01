@@ -3,22 +3,17 @@ import express from "express";
 import { addGameScore, getBestUserScores } from "./services/game-scores.js";
 import { Server } from "socket.io";
 import { createServer } from "http";
+import "dotenv/config.js";
 
 const PORT = 3000;
 const app = express();
-// const httpServer = createServer(app)
-// const io = new Server(httpServer, {})
 
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://127.0.0.1:3069",
+    origin: process.env.FE_URL,
   }),
 );
-
-app.listen(PORT, () => {
-  console.log("App started on port 3000");
-});
 
 app.get("/", (req, res) => {
   res.send("APP WORKS");
@@ -40,4 +35,23 @@ app.post("/game-scores", async (req, res) => {
       message: "Server failed",
     });
   }
+});
+
+//  NOTE: Socket.IO config below
+
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: process.env.FE_URL,
+  },
+});
+
+io.on("connection", (socket) => {
+  socket.on("event2", (data) => {
+    io.emit("letter", `position of ${socket.id}: ${data}`);
+  });
+});
+
+httpServer.listen(PORT, () => {
+  console.log("Server is listening on port 3000");
 });
