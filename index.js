@@ -4,6 +4,8 @@ import { addGameScore, getBestUserScores } from "./services/game-scores.js";
 import { Server } from "socket.io";
 import { createServer } from "http";
 import "dotenv/config.js";
+import { RoomStatus } from "./utils/enums.js";
+import { TypeRoom } from "./utils/room.js";
 
 const PORT = 3000;
 const app = express();
@@ -46,9 +48,33 @@ const io = new Server(httpServer, {
   },
 });
 
+const activeTypeRooms = [];
+
 io.on("connection", (socket) => {
+  console.log("CONNECTING NEW CLIENT");
+  const unfilledRoom = activeTypeRooms.find(
+    (room) => room.status === RoomStatus.UNFILLED,
+  );
+  if (unfilledRoom) {
+    unfilledRoom.joinClientToRoom(socket);
+  } else {
+    const typeRoom = new TypeRoom();
+    typeRoom.joinClientToRoom(socket);
+    activeTypeRooms.push(typeRoom);
+  }
+  console.log(socket.rooms);
+
   socket.on("event2", (data) => {
-    io.emit("letter", `position of ${socket.id}: ${data}`);
+    // provjeri koji socket je ovo poslao socket.id odnosno find room kojem pripada ovaj socket
+    const socketRoom = activeTypeRooms.find((room) =>
+      room.clientIds.includes(socket.id),
+    );
+    console.log("emiting to room name: ", socketRoom.roomName);
+    // TODO: ova socket logika radi, refactor imena i kreni raditi na frontendu.
+    io.to(socketRoom.roomName).emit(
+      "letter",
+      `position of ${socket.id} from ${socketRoom.roomName}, data: ${data}`,
+    );
   });
 });
 
