@@ -9,7 +9,7 @@ export class TypeRoom {
     this.roomName = "ROOM: " + this.id;
     this.gameDataMap = new Map();
     this.MAX_SIZE = 2;
-    this.clientIds = [];
+    this.clientIds = new Map();
     this.words = null;
   }
 
@@ -17,11 +17,12 @@ export class TypeRoom {
     this.words = await getWords();
   }
 
-  joinClientToRoom(client) {
+  joinClientToRoom(client, username) {
     if (this.status !== RoomStatus.FILLED) {
       client.join(this.roomName);
       this.gameDataMap.set(client.id, 0);
-      this.clientIds.push(client.id);
+      console.log("INSIDE id and username", client.id, username);
+      this.clientIds.set(client.id, username);
     } else {
       throw new Error("Room Full Error");
     }
