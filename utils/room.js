@@ -1,5 +1,6 @@
 import { v4 as uuid } from "uuid";
 import { RoomStatus } from "./enums.js";
+import { getWords } from "./get-words.js";
 
 export class TypeRoom {
   constructor() {
@@ -9,6 +10,11 @@ export class TypeRoom {
     this.gameDataMap = new Map();
     this.MAX_SIZE = 2;
     this.clientIds = [];
+    this.words = null;
+  }
+
+  async getWords() {
+    this.words = await getWords();
   }
 
   joinClientToRoom(client) {

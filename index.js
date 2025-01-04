@@ -26,6 +26,7 @@ app.get("/game-scores", async (req, res) => {
 });
 
 app.post("/game-scores", async (req, res) => {
+  console.log("\n/game-scores POST BODY:", req.body, "\n");
   try {
     await addGameScore(req.body.username, req.body.wpm);
     res.status(201).json({
@@ -50,29 +51,33 @@ const io = new Server(httpServer, {
 
 const activeTypeRooms = [];
 
-io.on("connection", (socket) => {
-  console.log("CONNECTING NEW CLIENT");
+// warning: async await s get words mozda bude radio problem!
+io.on("connection", async (socket) => {
   const unfilledRoom = activeTypeRooms.find(
     (room) => room.status === RoomStatus.UNFILLED,
   );
   if (unfilledRoom) {
     unfilledRoom.joinClientToRoom(socket);
+    if (unfilledRoom.status === RoomStatus.FILLED) {
+      io.to(unfilledRoom.roomName).emit("full room", {
+        msg: "Get ready",
+        words: unfilledRoom.words,
+      });
+      console.log("emit full room event to: ", unfilledRoom.roomName);
+    }
   } else {
     const typeRoom = new TypeRoom();
+    await typeRoom.getWords();
     typeRoom.joinClientToRoom(socket);
     activeTypeRooms.push(typeRoom);
   }
-  console.log(socket.rooms);
 
-  socket.on("event2", (data) => {
-    // provjeri koji socket je ovo poslao socket.id odnosno find room kojem pripada ovaj socket
+  socket.on("wpmPosition", (data) => {
     const socketRoom = activeTypeRooms.find((room) =>
       room.clientIds.includes(socket.id),
     );
-    console.log("emiting to room name: ", socketRoom.roomName);
-    // TODO: ova socket logika radi, refactor imena i kreni raditi na frontendu.
     io.to(socketRoom.roomName).emit(
-      "letter",
+      "letterPosition",
       `position of ${socket.id} from ${socketRoom.roomName}, data: ${data}`,
     );
   });
