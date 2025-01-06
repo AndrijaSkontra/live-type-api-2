@@ -1,4 +1,4 @@
-import { prisma } from "../utils/prisma.js";
+import { prisma } from "../../utils/prisma.js";
 
 export async function addGameScore(username, wpm) {
   const result = await prisma.gameScore.create({
@@ -11,6 +11,7 @@ export async function addGameScore(username, wpm) {
 }
 
 export async function getBestUserScores() {
+  console.log("trying to get best user scores...");
   const gameScores = await prisma.gameScore.aggregateRaw({
     pipeline: [
       {
@@ -27,5 +28,6 @@ export async function getBestUserScores() {
       },
     ],
   });
+  console.log(gameScores);
   return gameScores;
 }
