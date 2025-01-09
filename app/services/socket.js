@@ -1,5 +1,5 @@
-import { TypeRoom } from "../../utils/room.js";
-import { RoomStatus } from "../../utils/enums.js";
+import { TypeRoom } from "../utils/room.js";
+import { RoomStatus } from "../utils/enums.js";
 
 export default function handleSocketConnection(io) {
   const activeTypeRooms = [];
