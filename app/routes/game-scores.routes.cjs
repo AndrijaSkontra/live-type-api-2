@@ -1,8 +1,8 @@
-import express from "express";
-import {
+const express = require("express");
+const {
   getBestUserScores,
   addGameScore,
-} from "../services/game-scores.service.js";
+} = require("../services/game-scores.service.cjs");
 
 const gameScoreRouter = express.Router();
 
@@ -24,4 +24,4 @@ gameScoreRouter.post("/", async (req, res) => {
   }
 });
 
-export default gameScoreRouter;
+module.exports = gameScoreRouter;

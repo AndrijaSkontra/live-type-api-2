@@ -1,12 +1,11 @@
 {
   "name": "live-type-express-api",
   "version": "1.0.0",
-  "type": "module",
-  "main": "index.js",
+  "main": "index.cjs",
   "scripts": {
-    "start": "node ./index.js",
-    "dev": "nodemon ./index.js",
-    "debug": "DEBUG=express:* node ./index.js"
+    "start": "node ./index.cjs",
+    "dev": "nodemon ./index.cjs",
+    "debug": "DEBUG=express:* node ./index.cjs"
   },
   "author": "",
   "license": "ISC",

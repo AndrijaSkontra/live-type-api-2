@@ -1,4 +1,4 @@
-export async function getWords() {
+async function getWords() {
   const rndWords = [];
   const NUMBER_OF_WORDS = 6;
 
@@ -322,3 +322,5 @@ const words = [
   "yucca",
   "zest",
 ];
+
+module.exports = { getWords };

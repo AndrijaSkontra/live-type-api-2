@@ -1,6 +1,6 @@
-import { prisma } from "../utils/prisma.js";
+const { prisma } = require("../utils/prisma.cjs");
 
-export async function addGameScore(username, wpm) {
+async function addGameScore(username, wpm) {
   const result = await prisma.gameScore.create({
     data: {
       username: username,
@@ -10,7 +10,7 @@ export async function addGameScore(username, wpm) {
   console.log(result);
 }
 
-export async function getBestUserScores() {
+async function getBestUserScores() {
   console.log("trying to get best user scores...");
   const gameScores = await prisma.gameScore.aggregateRaw({
     pipeline: [
@@ -31,3 +31,8 @@ export async function getBestUserScores() {
   console.log(gameScores);
   return gameScores;
 }
+
+module.exports = {
+  addGameScore,
+  getBestUserScores,
+};

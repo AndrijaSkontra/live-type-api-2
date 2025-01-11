@@ -1,7 +1,7 @@
-import { TypeRoom } from "../utils/room.js";
-import { RoomStatus } from "../utils/enums.js";
+const { TypeRoom } = require("../utils/room.cjs");
+const { RoomStatus } = require("../utils/enums.cjs");
 
-export default function handleSocketConnection(io) {
+function handleSocketConnection(io) {
   const activeTypeRooms = [];
 
   io.on("connection", async (socket) => {
@@ -33,3 +33,5 @@ export default function handleSocketConnection(io) {
     });
   });
 }
+
+module.exports = handleSocketConnection;
