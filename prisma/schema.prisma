@@ -12,3 +12,10 @@ model GameScore {
   username String
   wpm      BigInt
 }
+
+model UserCredentials {
+  id            String  @id @default(auto()) @map("_id") @db.ObjectId
+  email         String
+  password      String
+  mailConfirmed Boolean @default(false)
+}
