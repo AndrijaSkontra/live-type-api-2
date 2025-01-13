@@ -21,7 +21,8 @@ authRouter.post("/login", async (req, res) => {
         expiresIn: JWT_TIME_EXPIRATION,
       },
     );
-    res.send({ message: "Successfully Login" });
+    // todo: this should be replaced with a http only cookie
+    res.send({ jwt: jwtToken });
   } else {
     res.status(403).json({ message: "Wrong Credentials" });
   }
