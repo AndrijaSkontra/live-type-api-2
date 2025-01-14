@@ -1,8 +1,7 @@
-async function getWords() {
+async function getWords(wordsAmount = 6) {
   const rndWords = [];
-  const NUMBER_OF_WORDS = 6;
 
-  for (let step = 0; step < NUMBER_OF_WORDS; step++) {
+  for (let step = 0; step < wordsAmount; step++) {
     const rndWord = words[Math.floor(Math.random() * words.length)];
     rndWords.push(rndWord);
   }
