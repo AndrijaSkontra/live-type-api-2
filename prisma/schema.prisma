@@ -8,9 +8,10 @@ datasource db {
 }
 
 model GameScore {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
   username String
   wpm      BigInt
+  date     DateTime @default(now())
 }
 
 model UserCredentials {

@@ -5,23 +5,28 @@ function handleSocketConnection(io) {
   const activeTypeRooms = [];
 
   io.on("connection", async (socket) => {
-    const username = socket.handshake.query.username;
+    // playerId can be a jwt token or a random guest username
+    const playerId = socket.handshake.query.jwt;
+    console.log("con: ", playerId);
     const unfilledRoom = activeTypeRooms.find(
       (room) => room.status === RoomStatus.UNFILLED,
     );
     if (unfilledRoom) {
-      unfilledRoom.joinClientToRoom(socket, username);
-      if (unfilledRoom.status === RoomStatus.FILLED) {
-        io.to(unfilledRoom.roomName).emit("full room", {
-          msg: "Get ready",
-          usernames: Array.from(unfilledRoom.clientIds.values()),
-          words: unfilledRoom.words,
-        });
+      if (!doesPlayerExistInTheRoomAlready(playerId, unfilledRoom)) {
+        console.log(!doesPlayerExistInTheRoomAlready(playerId, unfilledRoom));
+        unfilledRoom.joinClientToRoom(socket, playerId);
+        if (unfilledRoom.status === RoomStatus.FILLED) {
+          io.to(unfilledRoom.roomName).emit("full room", {
+            msg: "Get ready",
+            usernames: Array.from(unfilledRoom.clientIds.values()),
+            words: unfilledRoom.words,
+          });
+        }
       }
     } else {
       const typeRoom = new TypeRoom();
       await typeRoom.getWords();
-      typeRoom.joinClientToRoom(socket, username);
+      typeRoom.joinClientToRoom(socket, playerId);
       activeTypeRooms.push(typeRoom);
     }
 
@@ -32,6 +37,17 @@ function handleSocketConnection(io) {
       io.to(socketRoom.roomName).emit("letterPosition", data);
     });
   });
+}
+
+function doesPlayerExistInTheRoomAlready(playerId, unfilledRoom) {
+  const mapInTheRoom = unfilledRoom.clientIds;
+  const roomUsernameIds = Array.from(mapInTheRoom.values());
+  console.log(roomUsernameIds, playerId);
+  if (roomUsernameIds.some((username) => username === playerId)) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 module.exports = handleSocketConnection;

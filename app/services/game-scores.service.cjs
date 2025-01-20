@@ -5,30 +5,32 @@ async function addGameScore(username, wpm) {
     data: {
       username: username,
       wpm: wpm,
+      date: new Date(),
     },
   });
-  console.log(result);
 }
 
 async function getBestUserScores() {
-  console.log("trying to get best user scores...");
   const gameScores = await prisma.gameScore.aggregateRaw({
     pipeline: [
       {
+        $sort: { date: -1 }, // Sort by date in descending order to get the latest scores first
+      },
+      {
         $group: {
           _id: "$username",
-          maxWpm: { $max: "$wpm" },
+          wpm: { $max: "$wpm" },
+          date: { $first: "$date" }, // Get the date of the latest score
         },
       },
       {
-        $sort: { maxWpm: -1 },
+        $sort: { maxWpm: -1 }, // Sort by max WPM in descending order
       },
       {
-        $limit: 30,
+        $limit: 30, // Limit to top 30 users
       },
     ],
   });
-  console.log(gameScores);
   return gameScores;
 }
 

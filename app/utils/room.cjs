@@ -21,17 +21,14 @@ class TypeRoom {
     if (this.status !== RoomStatus.FILLED) {
       client.join(this.roomName);
       this.gameDataMap.set(client.id, 0);
-      console.log("INSIDE id and username", client.id, username);
       this.clientIds.set(client.id, username);
     } else {
       throw new Error("Room Full Error");
     }
-    console.log("debug: ", this.gameDataMap.size, this.MAX_SIZE);
     if (this.gameDataMap.size === this.MAX_SIZE) {
       this.status = RoomStatus.FILLED;
     }
-    console.log("Room status: ", this.status);
   }
 }
 
-module.exports = TypeRoom;
+module.exports = { TypeRoom };
