@@ -6,6 +6,7 @@ const { createServer } = require("http");
 const gameScoreRouter = require("./app/routes/game-scores.routes.cjs");
 const authRouter = require("./app/routes/auth.routes.cjs");
 const wordsRouter = require("./app/routes/words.routes.cjs");
+const mobileRouter = require("./app/routes/mobile-app-routes.cjs");
 const handleSocketConnection = require("./app/services/socket.cjs");
 
 const PORT = 3000;
@@ -22,6 +23,7 @@ app.use(
 app.use("/game-scores", gameScoreRouter);
 app.use("/auth", authRouter);
 app.use("/words", wordsRouter);
+app.use("/shortcuts", mobileRouter);
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
